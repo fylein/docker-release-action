@@ -8,7 +8,7 @@ This GitHub Action requires a bunch of environment variables, check the env sect
   
 ```yaml
 # .github/workflows/deploy.yml 
-name: Continuous Deployment
+name: Build Code
 
 on:
   push:
@@ -17,10 +17,10 @@ on:
 
 jobs:
   assign:
-    name: Deploy to Production
+    name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: deploy to production
+    - name: push to dockerhub
       uses: fylein/docker-release-action@master
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
