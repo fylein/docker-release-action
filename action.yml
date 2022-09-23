@@ -1,4 +1,4 @@
-name: Docker Build and Push
+name: Docker Push Latest Commit Hash
 description: 'Build docker images using Dockerfile in your repository and Push them to Docker Hub'
 branding:
   icon: box
