@@ -11,8 +11,8 @@ runs-on: ubuntu-latest
 runs:
   using: 'composite'
   steps:
-    id: generate-and-push-tag
-    - name:
+    - name: Build And Push Tag
+      id: generate-and-push-tag
       run: |
         bash ${{ github.action_path }}/build.sh
       shell: bash
