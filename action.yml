@@ -1,4 +1,4 @@
-name: Docker Push Latest Commit Hash
+name: Docker Build And Push Latest Tag
 description: 'Build docker images using Dockerfile in your repository and Push them to Docker Hub'
 branding:
   icon: box
@@ -10,9 +10,9 @@ outputs:
 runs-on: ubuntu-latest
 runs:
   using: 'composite'
-  id: generate-and-push-tag
   steps:
-  - 
-    run: |
-      bash ${{ github.action_path }}/build.sh
-    shell: bash
+    id: generate-and-push-tag
+    - name:
+      run: |
+        bash ${{ github.action_path }}/build.sh
+      shell: bash
