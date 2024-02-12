@@ -3,9 +3,14 @@ description: 'Build docker images using Dockerfile in your repository and Push t
 branding:
   icon: box
   color: gray-dark
+outputs:
+  new_tag:
+    description: "The new tag which was generated"
+    value: ${{ steps.generate-and-push-tag.outputs.new_tag }}
 runs-on: ubuntu-latest
 runs:
   using: 'composite'
+  id: generate-and-push-tag
   steps:
   - 
     run: |
