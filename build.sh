@@ -1,8 +1,7 @@
 #!/bin/bash
 branch_name=$(git branch --show-current)
-if [ $branch_name == 'master' ]; then
-    NEW_TAG="v$(git rev-parse --short HEAD)"
-else
+
+if [[ "$branch_name" == *release* ]]; then
     git fetch --tags
     last_release_version=$(git tag --sort=-version:refname | grep ${branch_name} | head -n 1)
 
@@ -19,7 +18,8 @@ else
     git config --global user.name "GitHub Actions"
     git tag -a "${NEW_TAG}" -m "automatically tagged ${NEW_TAG}"
     git push origin "${NEW_TAG}"
-
+else
+    NEW_TAG="v$(git rev-parse --short HEAD)"
 fi
 echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
 
