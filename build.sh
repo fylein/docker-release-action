@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Fail fast
+set -e
+
 branch_name=$(git branch --show-current)
 
 if [[ "$branch_name" == *release* ]]; then
