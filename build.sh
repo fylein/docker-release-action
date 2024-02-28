@@ -28,7 +28,7 @@ fi
 echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
 
 docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
-docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG --build-arg ssh_prv_key="$SSH_PRIVATE_KEY" .
+docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG .
 echo "Pushing Docker Image to Docker Hub";
 docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG
 echo "NEW_TAG=v$(git rev-parse --short HEAD)" >> $GITHUB_ENV
