@@ -3,6 +3,9 @@
 # Fail fast
 set -e
 
+# Default build path is current directory if not specified
+DOCKER_BUILD_PATH=${DOCKER_BUILD_PATH:-.}
+
 branch_name=$(git branch --show-current)
 
 if [[ "$branch_name" == *release* ]]; then
@@ -29,9 +32,9 @@ echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
 
 docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
 if [ -n "$SENTRY_AUTH_TOKEN" ]; then
-    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG --build-arg ssh_prv_key="$SSH_PRIVATE_KEY" --build-arg SENTRY_AUTH_TOKEN="$SENTRY_AUTH_TOKEN" .
+    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG --build-arg ssh_prv_key="$SSH_PRIVATE_KEY" --build-arg SENTRY_AUTH_TOKEN="$SENTRY_AUTH_TOKEN" -f $DOCKER_BUILD_PATH/Dockerfile $DOCKER_BUILD_PATH
 else
-    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG --build-arg ssh_prv_key="$SSH_PRIVATE_KEY" .
+    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG --build-arg ssh_prv_key="$SSH_PRIVATE_KEY" -f $DOCKER_BUILD_PATH/Dockerfile $DOCKER_BUILD_PATH
 fi
 echo "Pushing Docker Image to Docker Hub";
 docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG
