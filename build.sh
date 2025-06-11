@@ -27,13 +27,30 @@ else
 fi
 echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
 
+# Set up Docker Buildx for optimized builds
+docker buildx create --use --driver docker-container --name multiarch --bootstrap 2>/dev/null || docker buildx use multiarch
+
 docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
+
+echo "Building optimized Docker image with caching...";
 if [ -n "$SENTRY_AUTH_TOKEN" ]; then
-    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG --build-arg SENTRY_AUTH_TOKEN="$SENTRY_AUTH_TOKEN" .
+    docker buildx build \
+        --platform linux/amd64 \
+        --cache-from type=gha \
+        --cache-to type=gha,mode=max \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --build-arg SENTRY_AUTH_TOKEN="$SENTRY_AUTH_TOKEN" \
+        -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG \
+        --push .
 else
-    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG .
+    docker buildx build \
+        --platform linux/amd64 \
+        --cache-from type=gha \
+        --cache-to type=gha,mode=max \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG \
+        --push .
 fi
-echo "Pushing Docker Image to Docker Hub";
-docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG
+
 echo "NEW_TAG=v$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 echo "New tag: $NEW_TAG";
