@@ -28,11 +28,17 @@ fi
 echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
 
 docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
-if [ -n "$SENTRY_AUTH_TOKEN" ]; then
-    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG --build-arg SENTRY_AUTH_TOKEN="$SENTRY_AUTH_TOKEN" .
-else
-    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG .
+
+if [ -z "$DOCKERFILE" ]; then
+    DOCKERFILE="Dockerfile"
 fi
+
+if [ -n "$SENTRY_AUTH_TOKEN" ]; then
+    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG -f $DOCKERFILE --build-arg SENTRY_AUTH_TOKEN="$SENTRY_AUTH_TOKEN" .
+else
+    docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG -f $DOCKERFILE .
+fi
+
 echo "Pushing Docker Image to Docker Hub";
 docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$NEW_TAG
 echo "NEW_TAG=v$(git rev-parse --short HEAD)" >> $GITHUB_ENV
