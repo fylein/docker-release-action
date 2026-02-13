@@ -27,3 +27,15 @@ jobs:
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
 ```
+
+Use the optional `DOCKERFILE` variable to specify a custom path to your Dockerfile (defaults to `Dockerfile` if not set).
+
+```yaml
+- name: push to dockerhub
+  uses: fylein/docker-release-action@master
+  env:
+    DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+    IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+    DOCKERFILE: prod.Dockerfile   # optional: path to your Dockerfile
+```
